@@ -1,5 +1,4 @@
-# Azure Search
-# Microsoft Virtual Academy Course Traing Materials
+# Azure Search - Microsoft Virtual Academy Course Traing Materials
 
 The code included in this repository is used as part of the Microsoft Virtual Academy course on Azure Search 
 http://www.microsoftvirtualacademy.com/liveevents/adding-microsoft-azure-search-to-your-websites-and-apps
