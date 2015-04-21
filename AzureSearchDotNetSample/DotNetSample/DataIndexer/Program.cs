@@ -114,12 +114,9 @@ namespace DataIndexer
             // Create a new indexer and sync it
             try
             {
-                DataSource ds = new DataSource();
-                ds.Name = "usgs-datasource";
+                var creds = new DataSourceCredentials("Server=tcp:azs-playground.database.windows.net,1433;Database=usgs;User ID=reader;Password=EdrERBt3j6mZDP;Trusted_Connection=False;Encrypt=True;Connection Timeout=30");
+                DataSource ds = new DataSource("usgs-datasource", DataSourceType.AzureSql, creds, new DataContainer("GeoNamesRI"));
                 ds.Description = "USGS Dataset";
-                ds.Type = "azuresql";
-                ds.Credentials = new DataSourceCredentials("Server=tcp:azs-playground.database.windows.net,1433;Database=usgs;User ID=reader;Password=EdrERBt3j6mZDP;Trusted_Connection=False;Encrypt=True;Connection Timeout=30");
-                ds.Container = new DataContainer("GeoNamesRI");
 
                 Indexer idx = new Indexer();
                 idx.Name = "usgs-indexer";
@@ -142,14 +139,39 @@ namespace DataIndexer
                 //Launch the sync and then monitor progress until complete
                 AzureOperationResponse response = _searchClient.Indexers.Run("usgs-indexer");
                 IndexerGetStatusResponse statusResponse;
-                do
+                bool running = true;
+                
+                Console.WriteLine("{0}", "Synchronization running...\n");
+                while (running)
                 {
-                    // Check status every 3 seconds
-                    Thread.Sleep(3000);
                     statusResponse = _searchClient.Indexers.GetStatus("usgs-indexer");
-                    Console.WriteLine("Sync {0}...", statusResponse.ExecutionInfo.LastResult.Status.ToString());
-                } while (statusResponse.ExecutionInfo.LastResult.Status.ToString() == "InProgress");
-                Console.WriteLine("Synchronized {0} rows.\n", statusResponse.ExecutionInfo.LastResult.ItemCount.ToString());
+                    if (statusResponse.StatusCode != HttpStatusCode.OK)
+                    {
+                        Console.WriteLine("Error polling for indexer status.  Status Code: {0}", response.StatusCode.ToString());
+                        return;
+                    }
+
+                    if (statusResponse.ExecutionInfo.LastResult != null)
+                    {
+                        switch (statusResponse.ExecutionInfo.LastResult.Status.ToString())
+                        {
+                            case "InProgress":
+                                Console.WriteLine("{0}", "Synchronization running...\n");
+                                Thread.Sleep(3000);
+                                break;
+
+                            case "Success":
+                                running = false;
+                                Console.WriteLine("Synchronized {0} rows...\n", statusResponse.ExecutionInfo.LastResult.ItemCount.ToString());
+                                break;
+
+                            default:
+                                running = false;
+                                Console.WriteLine("Synchronization failed: {0}\n", statusResponse.ExecutionInfo.LastResult.ErrorMessage.ToString());
+                                break;
+                        }
+                    }
+                }
 
             }
             catch (Exception ex)
