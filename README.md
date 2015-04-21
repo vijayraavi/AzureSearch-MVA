@@ -1,6 +1,7 @@
 # Azure Search-Microsoft Virtual Academy
 
-The code included in this repository is used as part of the Microsoft Virtual Academy course on Azure Search (http://www.microsoftvirtualacademy.com/liveevents/adding-microsoft-azure-search-to-your-websites-and-apps).
+The code included in this repository is used as part of the Microsoft Virtual Academy course on Azure Search 
+http://www.microsoftvirtualacademy.com/liveevents/adding-microsoft-azure-search-to-your-websites-and-apps
 
 The code in this repo is licensed under the MIT License
 
