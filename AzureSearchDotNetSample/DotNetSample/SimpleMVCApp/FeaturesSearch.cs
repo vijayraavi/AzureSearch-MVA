@@ -32,12 +32,15 @@ namespace SimpleSearchMVCApp
             }
         }
 
-        public DocumentSearchResponse Search(string searchText)
+        public DocumentSearchResponse Search(string searchText, string countyFacet)
         {
             // Execute search based on query string
             try
             {
-                SearchParameters sp = new SearchParameters() { SearchMode = SearchMode.All };
+                SearchParameters sp = new SearchParameters()
+                {
+                    SearchMode = SearchMode.All
+                };
                 return _indexClient.Documents.Search(searchText, sp);
             }
             catch (Exception ex)
@@ -46,6 +49,7 @@ namespace SimpleSearchMVCApp
             }
             return null;
         }
+
 
     }
 }

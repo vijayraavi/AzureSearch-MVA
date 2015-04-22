@@ -8,6 +8,7 @@
 //limitations under the License.
 
 using Microsoft.Azure.Search.Models;
+using SimpleSearchMVCApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,19 +28,19 @@ namespace SimpleSearchMVCApp.Controllers
             return View();
         }
 
-        public ActionResult Search(string q = "")
+        public ActionResult Search(string q = "", string countyFacet = "")
         {
             // If blank search, assume they want to search everything
             if (string.IsNullOrWhiteSpace(q))
                 q = "*";
 
+            var response = _featuresSearch.Search(q, countyFacet);
             return new JsonResult
             {
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                Data = _featuresSearch.Search(q)
+                Data = new USGSResponse() { Results = response.Results, Facets = response.Facets, Count = Convert.ToInt32(response.Count) }
             };
         }
-
 
     }
 }

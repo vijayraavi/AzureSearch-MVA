@@ -29,19 +29,17 @@
             searchResultsHTML += "<td>Elevation (m)</td><td>Elevation (ft)</td><td>MAP NAME</td><td>LOCATION (Lat, Long)</td>";
             searchResultsHTML += "<td>DESCRIPTION</td><td>HISTORY</td><td>DATE CREATED</td>";
             searchResultsHTML += "<td>DATE EDITED</td></tr>";
-            for (var i = 0; i < data.length; i++) {
-                searchResultsHTML += "<td>" + data[i].Document.FEATURE_NAME + "</td>";
-                searchResultsHTML += "<td>" + data[i].Document.FEATURE_CLASS + "</td>";
-                searchResultsHTML += "<td>" + data[i].Document.STATE_ALPHA + "</td>";
-                searchResultsHTML += "<td>" + data[i].Document.COUNTY_NAME + "</td>";
-                searchResultsHTML += "<td>" + data[i].Document.ELEV_IN_M + "</td>";
-                searchResultsHTML += "<td>" + data[i].Document.ELEV_IN_FT + "</td>";
-                searchResultsHTML += "<td>" + data[i].Document.MAP_NAME + "</td>";
-                searchResultsHTML += "<td>" + data[i].Document.LOCATION.Latitude + ", " + data[i].Document.LOCATION.Longitude + "</td>";
-                searchResultsHTML += "<td>" + data[i].Document.DESCRIPTION + "</td>";
-                searchResultsHTML += "<td>" + data[i].Document.HISTORY + "</td>";
-                searchResultsHTML += "<td>" + parseJsonDate(data[i].Document.DATE_CREATED) + "</td>";
-                searchResultsHTML += "<td>" + parseJsonDate(data[i].Document.DATE_EDITED) + "</td></tr>";
+            for (var i = 0; i < data.Results.length; i++) {
+                searchResultsHTML += "<td>" + data.Results[i].Document.FEATURE_NAME + "</td>";
+                searchResultsHTML += "<td>" + data.Results[i].Document.FEATURE_CLASS + "</td>";
+                searchResultsHTML += "<td>" + data.Results[i].Document.STATE_ALPHA + "</td>";
+                searchResultsHTML += "<td>" + data.Results[i].Document.COUNTY_NAME + "</td>";
+                searchResultsHTML += "<td>" + data.Results[i].Document.ELEV_IN_M + "</td>";
+                searchResultsHTML += "<td>" + data.Results[i].Document.ELEV_IN_FT + "</td>";
+                searchResultsHTML += "<td>" + data.Results[i].Document.MAP_NAME + "</td>";
+                searchResultsHTML += "<td>" + data.Results[i].Document.LOCATION.Latitude + ", " + data.Results[i].Document.LOCATION.Longitude + "</td>";
+                searchResultsHTML += "<td>" + data.Results[i].Document.DESCRIPTION + "</td>";
+                searchResultsHTML += "<td>" + data.Results[i].Document.HISTORY + "</td></tr>";
             }
 
             $("#searchResults").html(searchResultsHTML);
