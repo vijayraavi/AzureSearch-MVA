@@ -27,8 +27,7 @@
             var searchResultsHTML = "<tr><td>FEATURE NAME</td><td>FEATURE CLASS</td>";
             searchResultsHTML += "<td>STATE ALPHA</td><td>COUNTY_NAME</td>";
             searchResultsHTML += "<td>Elevation (m)</td><td>Elevation (ft)</td><td>MAP NAME</td><td>LOCATION (Lat, Long)</td>";
-            searchResultsHTML += "<td>DESCRIPTION</td><td>HISTORY</td><td>DATE CREATED</td>";
-            searchResultsHTML += "<td>DATE EDITED</td></tr>";
+            searchResultsHTML += "<td>DESCRIPTION</td><td>HISTORY</td></tr>";
             for (var i = 0; i < data.Results.length; i++) {
                 searchResultsHTML += "<td>" + data.Results[i].Document.FEATURE_NAME + "</td>";
                 searchResultsHTML += "<td>" + data.Results[i].Document.FEATURE_CLASS + "</td>";
