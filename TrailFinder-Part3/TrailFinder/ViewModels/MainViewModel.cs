@@ -13,6 +13,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Devices.Geolocation;
@@ -30,6 +31,7 @@ namespace TrailFinder.ViewModels
         #region Bindable properties
 
         public ObservableCollection<ItemViewModel> Items { get; private set; }
+        public ObservableCollection<string> Facets { get; private set; }
 
         private string _SearchType;
         public string SearchType
@@ -45,6 +47,13 @@ namespace TrailFinder.ViewModels
             get { return _SelectedIndex; }
             set { RaisePropertyChanged(ref _SelectedIndex, value); }
         }
+
+        private string _SelectedFacet;
+        public string SelectedFacet
+        {
+            get { return _SelectedFacet; }
+            set { RaisePropertyChanged(ref _SelectedFacet, value); }
+        }
         
 
         private string _SearchTerm;
@@ -59,6 +68,13 @@ namespace TrailFinder.ViewModels
         {
             get { return _IsLoading; }
             set { RaisePropertyChanged(ref _IsLoading, value); }
+        }
+
+        private bool _AreFacetsVisible;
+        public bool AreFacetsVisible
+        {
+            get { return _AreFacetsVisible; }
+            set { RaisePropertyChanged(ref _AreFacetsVisible, value); }
         }
 
         #endregion
@@ -104,28 +120,68 @@ namespace TrailFinder.ViewModels
             get { return new RelayCommand(() => Navigate(typeof(ItemPage), SelectedIndex)); }
         }
 
+        public ICommand ShowFacetsCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    AreFacetsVisible = true;
+                    Facets.Clear();
+                    foreach (var facet in SearchService.Facets)
+                    {
+                        Facets.Add(facet.Value.ToString() + " (" + facet.Count + ")");
+                    }
+                });
+            }
+        }
+
+        public ICommand FilterByFacetCommand
+        {
+            get
+            {
+                return new RelayCommand(async () =>
+                {
+                    AreFacetsVisible = false;
+                    string facet = SelectedFacet.Split(' ')[0];
+                    if (SearchType == "Trails near me")
+                    {
+                        await SearchTrailsNearMe(facet);
+                    }
+                    else 
+                    {
+                        await SearchTrails(facet);
+                    }
+                });
+            }
+        }
+
         #endregion
 
         public MainViewModel()
         {
             Items = new ObservableCollection<ItemViewModel>();
+            Facets = new ObservableCollection<string>();
             SpeechRecognizer = new Windows.Media.SpeechRecognition.SpeechRecognizer();
+            AreFacetsVisible = false;
         }
 
-        private async Task SearchTrails()
+        private async Task SearchTrails(string filter = null)
         {
             SearchType = String.Format("Trails like {0}", SearchTerm);
             IsLoading = true;
-            var results = await SearchService.SearchAsync(SearchTerm);
+            Items.Clear();
+            var results = await SearchService.SearchAsync(SearchTerm, filter);
             AddSearchResults(results);
         }
 
-        private async Task SearchTrailsNearMe()
+        private async Task SearchTrailsNearMe(string filter = null)
         {
             SearchType = "Trails near me";
             IsLoading = true;
+            Items.Clear();
             var position = await GetCurrentGeolocation();
-            var results = await SearchService.GeoSearchAsync(position.Coordinate);
+            var results = await SearchService.GeoSearchAsync(position.Coordinate, filter);
             AddSearchResults(results);
         }
 

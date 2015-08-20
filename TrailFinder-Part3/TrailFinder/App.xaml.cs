@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using TrailFinder.Views;
 using TrailFinder.ViewModels;
+using TrailFinder.DataModel;
 
 // The Pivot Application template is documented at http://go.microsoft.com/fwlink/?LinkID=391641
 
@@ -155,6 +156,10 @@ namespace TrailFinder
 
             // Ensure the current window is active.
             Window.Current.Activate();
+
+            SearchService.ServiceName = App.Current.Resources["ServiceName"].ToString();
+            SearchService.IndexName = App.Current.Resources["IndexName"].ToString();
+            SearchService.QueryKey = App.Current.Resources["QueryKey"].ToString();
         }
 
 

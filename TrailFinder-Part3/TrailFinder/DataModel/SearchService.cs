@@ -23,34 +23,57 @@ namespace TrailFinder.DataModel
 {
     public class SearchService
     {
-        private const string ServiceName = <your service name>;
-        private const string IndexName = <your index name>;
-        private const string QueryKey = <your query key>;
+        private const string FacetName = "COUNTY_NAME";
+        private const string BaseFilter = "FEATURE_CLASS eq 'Trail'";
+        public static List<FacetResult> Facets;
 
-        public static async Task<IEnumerable<ItemViewModel>> SearchAsync(string searchString)
+        public static string ServiceName;
+        public static string IndexName;
+        public static string QueryKey;
+
+        public static async Task<IEnumerable<ItemViewModel>> SearchAsync(string searchString, string filter = null)
         {
             var searchParameters = new SearchParameters()
             {
-                Filter = "FEATURE_CLASS eq 'Trail'"
+                Filter = CreateFilter(filter),
+                Facets = new[]
+                {
+                    FacetName
+                }
             };
             return await DoSearchAsync(searchString, searchParameters);
         }
 
-        public static async Task<IEnumerable<ItemViewModel>> GeoSearchAsync(Geocoordinate coordinate)
+        public static async Task<IEnumerable<ItemViewModel>> GeoSearchAsync(Geocoordinate coordinate, string filter = null)
         {
             var position = coordinate.Point.Position;
             var orderByFilter = String.Format("geo.distance(LOCATION, geography'POINT({0} {1})')", position.Longitude, position.Latitude);
+                       
 
             var searchParameters = new SearchParameters()
             {
-                Filter = "FEATURE_CLASS eq 'Trail'",
+                Filter = CreateFilter(filter),
                 OrderBy = new[]
                 {
                     orderByFilter
+                },
+                Facets = new[]
+                {
+                    FacetName
                 }
             };
 
             return await DoSearchAsync("*", searchParameters);
+        }
+
+        private static string CreateFilter(string filter)
+        {
+            var searchFilter = BaseFilter;
+            if (!String.IsNullOrEmpty(filter))
+            {
+                searchFilter = String.Format("{0} and {1} eq '{2}'", searchFilter, FacetName, filter);
+            }
+            return searchFilter;
         }
 
         private static async Task<IEnumerable<ItemViewModel>> DoSearchAsync(string searchString, SearchParameters parameters)
@@ -61,6 +84,7 @@ namespace TrailFinder.DataModel
             {
                 var response = await indexClient.Documents.SearchAsync<ItemViewModel>(searchString, parameters);
                 searchResults.AddRange(response.Results.Select(result => result.Document));
+                Facets = response.Facets[FacetName].ToList();
             }
             return searchResults;
         }

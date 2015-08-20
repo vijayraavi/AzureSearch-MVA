@@ -13,6 +13,11 @@
 	<views:BasePage.Resources>
 		<Common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 	</views:BasePage.Resources>
+	<views:BasePage.BottomAppBar>
+		<CommandBar>
+			<AppBarButton Icon="Bullets" Label="Counties" Command="{Binding ShowFacetsCommand, Mode=OneWay}"/>
+		</CommandBar>
+	</views:BasePage.BottomAppBar>
 
 	<Grid x:Name="LayoutRoot">
 		<Grid.ChildrenTransitions>
@@ -24,6 +29,8 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
+
+		<!-- Title Panel -->
 
 		<!-- Title Panel -->
 		<StackPanel Grid.Row="0" Margin="19,0,0,0">
@@ -65,6 +72,28 @@
 			</ListView>
 		</Grid>
 		<ProgressBar HorizontalAlignment="Left" Height="18" VerticalAlignment="Top" Width="400" Margin="0,207.833,0,0" Grid.Row="1" IsIndeterminate="{Binding IsLoading}" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" Background="{x:Null}"/>
+		<Grid Margin="0" Grid.RowSpan="2" Background="#FF292929" Visibility="{Binding AreFacetsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+			<ListView
+				ItemsSource="{Binding Facets}"
+				ContinuumNavigationTransitionInfo.ExitElementContainer="True" Margin="10,30,38,138" FontFamily="Segoe UI Semibold" FontSize="32" SelectedItem="{Binding SelectedFacet, Mode=TwoWay}">
+				<Interactivity:Interaction.Behaviors>
+					<Core:EventTriggerBehavior EventName="Tapped">
+						<Core:InvokeCommandAction Command="{Binding FilterByFacetCommand, Mode=OneWay}"/>
+					</Core:EventTriggerBehavior>
+				</Interactivity:Interaction.Behaviors>
+				<ListView.ItemTemplate>
+					<DataTemplate>
+							<TextBlock
+								Text="{Binding}"
+								TextWrapping="Wrap"
+								Pivot.SlideInAnimationGroup="1"
+								CommonNavigationTransitionInfo.IsStaggerElement="True"
+								Style="{ThemeResource ListViewItemTextBlockStyle}"
+								Margin="10,15,15,0" FontSize="24"/>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</Grid>
 
 	</Grid>
 </views:BasePage>
