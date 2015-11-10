@@ -7,7 +7,7 @@
     var map = null;
     var query = getQueryParams(document.location.search);
     var lat = 41.5;
-    var lon = -71.6
+    var lon = -71.6;
     var distance = 500;
 
     $(function () {
@@ -15,7 +15,7 @@
 			 { credentials: 'Ar2M7yRkriUhSBq-cYrZpR9KqbjakBKI3uB1VO3vGOW9Pv3TlIMJQOR310J9oBmy' });
 
         var geoLocationProvider = new Microsoft.Maps.GeoLocationProvider(map);
-        geoLocationProvider.getCurrentPosition({ successCallback: ZoomIn });
+        geoLocationProvider.getCurrentPosition({ successCallback: ZoomIn() });
         var pinInfobox = null;
         var infoboxLayer = new Microsoft.Maps.EntityCollection();
         var pinLayer = new Microsoft.Maps.EntityCollection();
