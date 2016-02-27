@@ -32,7 +32,7 @@ namespace SimpleSearchMVCApp
             }
         }
 
-        public DocumentSearchResponse Search(string searchText, string countyFacet)
+        public DocumentSearchResult Search(string searchText, string countyFacet)
         {
             // Execute search based on query string
             try
@@ -66,7 +66,7 @@ namespace SimpleSearchMVCApp
             return null;
         }
 
-        public DocumentSuggestResponse Suggest(string searchText, bool fuzzy)
+        public DocumentSuggestResult Suggest(string searchText, bool fuzzy)
         {
             // Execute search based on query string
             try
@@ -86,7 +86,7 @@ namespace SimpleSearchMVCApp
             return null;
         }
 
-        public DocumentSearchResponse GeoSearch(string lat, string lon, int distance)
+        public DocumentSearchResult GeoSearch(string lat, string lon, int distance)
         {
             // Execute geo search based on query string
             try

@@ -145,47 +145,50 @@ namespace DataIndexer
                 _searchClient.Indexers.Create(idx);
 
                 //Launch the sync and then monitor progress until complete
-                AzureOperationResponse response = _searchClient.Indexers.Run("usgs-indexer");
-                IndexerGetStatusResponse statusResponse;
                 bool running = true;
-                
+
                 Console.WriteLine("{0}", "Synchronization running...\n");
                 while (running)
                 {
-                    statusResponse = _searchClient.Indexers.GetStatus("usgs-indexer");
-                    if (statusResponse.StatusCode != HttpStatusCode.OK)
+                    IndexerExecutionInfo status = null;
+                    try
                     {
-                        Console.WriteLine("Error polling for indexer status.  Status Code: {0}", response.StatusCode.ToString());
+                        status = _searchClient.Indexers.GetStatus(idx.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error polling for indexer status: {0}", ex.Message);
                         return;
                     }
 
-                    if (statusResponse.ExecutionInfo.LastResult != null)
+                    IndexerExecutionResult lastResult = status.LastResult;
+                    if (lastResult != null)
                     {
-                        switch (statusResponse.ExecutionInfo.LastResult.Status.ToString())
+                        switch (lastResult.Status)
                         {
-                            case "InProgress":
+                            case IndexerExecutionStatus.InProgress:
                                 Console.WriteLine("{0}", "Synchronization running...\n");
-                                Thread.Sleep(3000);
+                                Thread.Sleep(1000);
                                 break;
 
-                            case "Success":
+                            case IndexerExecutionStatus.Success:
                                 running = false;
-                                Console.WriteLine("Synchronized {0} rows...\n", statusResponse.ExecutionInfo.LastResult.ItemCount.ToString());
+                                Console.WriteLine("Synchronized {0} rows...\n", lastResult.ItemCount);
                                 break;
 
                             default:
                                 running = false;
-                                Console.WriteLine("Synchronization failed: {0}\n", statusResponse.ExecutionInfo.LastResult.ErrorMessage.ToString());
+                                Console.WriteLine("Synchronization failed: {0}\n", lastResult.ErrorMessage);
                                 break;
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error creating indexer: {0}: \n", ex.Message.ToString());
             }
+
 
         }
     }

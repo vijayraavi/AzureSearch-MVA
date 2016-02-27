@@ -118,7 +118,7 @@
         		<StackPanel Margin="0,10,0,0">
         			<TextBlock x:Uid="SearchLabel" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}" VerticalAlignment="Top" Style="{StaticResource GroupHeaderTextBlockStyle}" HorizontalAlignment="Left" Margin="0,10,0,0"/>
         			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-        				<TextBox TextWrapping="Wrap" VerticalAlignment="Top" PlaceholderText="rattlesnake" Text="{Binding SearchTerm, Mode=TwoWay}" Margin="0,23,0,0" HorizontalAlignment="Center" Width="277" FontSize="22" Height="39"/>
+        				<TextBox TextWrapping="Wrap" VerticalAlignment="Top" PlaceholderText="trail" Text="{Binding SearchTerm, Mode=TwoWay}" Margin="0,23,0,0" HorizontalAlignment="Center" Width="277" FontSize="22" Height="39"/>
         				<Button HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource SpeechButtonStyle}" Height="80" Width="71" Margin="10,20,0,0"/>
         			</StackPanel>
         		</StackPanel>

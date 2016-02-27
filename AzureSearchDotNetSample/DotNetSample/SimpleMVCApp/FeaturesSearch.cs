@@ -32,7 +32,7 @@ namespace SimpleSearchMVCApp
             }
         }
 
-        public DocumentSearchResponse Search(string searchText, string countyFacet)
+        public DocumentSearchResult Search(string searchText, string countyFacet)
         {
             // Execute search based on query string
             try
